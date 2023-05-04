@@ -5,6 +5,10 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'org.springframework.boot' version '3.0.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'com.google.cloud.tools.jib' version '3.1.2'
 }
 
 repositories {
@@ -44,7 +48,7 @@ dependencies {
 group = 'org.springframework.samples'
 version = '3.0.0.BUILD-SNAPSHOT'
 description = 'petclinic'
-java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 publishing {
     publications {
@@ -60,4 +64,17 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
+}
+
+jib {
+    from {
+      image = "khipu/openjdk17-alpine"
+    }
+    to {
+      image = "rayshoo/jib"
+      tags = ["latest"]
+    }
+    container {
+      jvmFlags = ["-Xms128m", "-Xmx128m"]
+    }
 }
