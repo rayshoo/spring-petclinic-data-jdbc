@@ -10,3 +10,8 @@ services:
       - MYSQL_DATABASE=petclinic
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
+  was:
+    image: rayshoo/jib
+    ports:
+      - "8080:8080"
+    restart: always
