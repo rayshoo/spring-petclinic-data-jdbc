@@ -1,0 +1,35 @@
+spring:
+  # set profile
+  profiles:
+    active: ${SPRING_PROFILE:local}
+  # database init
+  datasource:
+    username: ${MYSQL_USER:root}
+    url: jdbc:mysql://${MYSQL_URL:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:petclinic}
+    password: ${MYSQL_PASS}
+  # do not attempt to replace database with in-memory database
+  test:
+    database:
+      replace: none
+  # Internationalization
+  messages:
+    basename: messages/messages
+  # Maximum time static resources should be cached
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 12h
+# Actuator / Management
+management:
+  endpoints:
+    web:
+      base-path: /manage
+      exposure:
+        include: '*'
+# Logging
+logging:
+  level:
+    org:
+      springframework: info
+    sql: debug
