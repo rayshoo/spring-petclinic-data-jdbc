@@ -1,18 +1,9 @@
 version: "2.2"
 
 services:
-  mysql:
-    image: mysql:8.0
-    ports:
-    - 3306:${MYSQL_PORT}
-    env_file:
-    - .env.mysql
-    volumes:
-    - "./conf.d:/etc/mysql/conf.d:ro"
-    - "/mnt/petclinic/mysql:/var/lib/mysql"
   base:
     build:
-      context: .
+      context: base
       dockerfile: Dockerfile
     image: ${BASE_IMAGE}:${BASE_IMAGE_TAG:-latest}
   was:
@@ -26,3 +17,12 @@ services:
     restart: always
     volumes:
     - "/logs:/var/log/petclinic"
+  mysql:
+    image: mysql:8.0
+    ports:
+    - 3306:${MYSQL_PORT}
+    env_file:
+    - .env.mysql
+    volumes:
+    - "./mysql/conf.d:/etc/mysql/conf.d:ro"
+    - "/mnt/petclinic/mysql:/var/lib/mysql"

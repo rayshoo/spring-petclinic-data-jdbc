@@ -12,7 +12,7 @@ base:
 .PHONY:base
 
 build:
-	./gradlew jib
+	cd was && ./gradlew jib
 .PHONY:build
 
 down:
