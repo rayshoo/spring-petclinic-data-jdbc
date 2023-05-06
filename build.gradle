@@ -71,8 +71,8 @@ jib {
       image = "khipu/openjdk17-alpine"
     }
     to {
-      image = "rayshoo/jib"
-      tags = ["latest"]
+      image = "rayshoo/petclinic"
+      tags = ["latest","v1.0.0-alpha"]
     }
     container {
       jvmFlags = ["-Xms128m", "-Xmx128m"]

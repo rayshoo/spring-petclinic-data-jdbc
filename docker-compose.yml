@@ -4,14 +4,18 @@ services:
   mysql:
     image: mysql:8.0
     ports:
-      - "3306:3306"
+    - "3306:${DB_PORT}"
     environment:
-      - MYSQL_ROOT_PASSWORD=petclinic
-      - MYSQL_DATABASE=petclinic
+    - MYSQL_ROOT_PASSWORD=${DB_PASS}
+    - MYSQL_DATABASE=${DB_PATH}
     volumes:
-      - "./conf.d:/etc/mysql/conf.d:ro"
+    - "./conf.d:/etc/mysql/conf.d:ro"
+    - "/mnt/petclinic/mysql:/var/lib/mysql"
   was:
-    image: rayshoo/jib
+    image: rayshoo/petclinic
     ports:
-      - "8080:8080"
+    - "8080:8080"
+    user: "1000:1000"
+    env_file:
+    - .env
     restart: always
