@@ -1,4 +1,9 @@
+server:
+  shutdown: graceful
 spring:
+  # sigkill timeout
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   # set profile
   profiles:
     active: ${SPRING_PROFILE:local}
