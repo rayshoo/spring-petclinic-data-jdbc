@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: petclinic-mysql
+  name: petclinic-{{ MYSQL_URL }}
+  namespace: default
+spec:
+  # type: ClusterIP
+  # clusterIP: None
+  ports:
+  - port: {{ MYSQL_PORT }}
+    protocol: TCP
+    targetPort: {{ MYSQL_PORT }}
+  selector:
+    app: petclinic-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: petclinic
+  name: petclinic
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: petclinic

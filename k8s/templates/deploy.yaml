@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: petclinic-mysql
+  name: petclinic-mysql
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-mysql
+  template:
+    metadata:
+      labels:
+        app: petclinic-mysql
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        envFrom:
+        - secretRef:
+            name: petclinic-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: petclinic
+  name: petclinic
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+      - image: {{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}
+        name: petclinic
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: petclinic-mysql
+              key: MYSQL_DATABASE
+        envFrom:
+        - secretRef:
+            name: petclinic
+      {%- if WAS_IMAGE_PULL_SECRET != "" %}
+      imagePullSecrets:
+      - name: {{ WAS_IMAGE_PULL_SECRET }}
+      {%- endif %}
