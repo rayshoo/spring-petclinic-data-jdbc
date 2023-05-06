@@ -4,10 +4,9 @@ services:
   mysql:
     image: mysql:8.0
     ports:
-    - 3306:${DB_PORT}
-    environment:
-    - MYSQL_ROOT_PASSWORD=${DB_PASS}
-    - MYSQL_DATABASE=${DB_PATH}
+    - 3306:${MYSQL_PORT}
+    env_file:
+    - .env.mysql
     volumes:
     - "./conf.d:/etc/mysql/conf.d:ro"
     - "/mnt/petclinic/mysql:/var/lib/mysql"
@@ -23,6 +22,7 @@ services:
     user: "1000:1000"
     env_file:
     - .env
+    - .env.mysql
     restart: always
     volumes:
     - "/logs:/var/log/petclinic"

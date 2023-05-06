@@ -15,6 +15,7 @@ _site/
 
 build/
 .env
+.env.mysql
 
 # Created by https://www.toptal.com/developers/gitignore/api/gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle
