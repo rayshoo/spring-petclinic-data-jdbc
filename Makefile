@@ -1,3 +1,6 @@
+include .env
+export
+
 GIT_VER=$(shell git describe --tags)
 .DEFAULT_GOAL := all
 

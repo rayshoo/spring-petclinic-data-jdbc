@@ -68,11 +68,11 @@ tasks.withType(Javadoc) {
 
 jib {
     from {
-      image = "rayshoo/petclinic-base"
+      image = System.getenv("BASE_IMAGE")
     }
     to {
-      image = "rayshoo/petclinic"
-      tags = ["latest","v1.0.0-alpha"]
+      image = System.getenv("WAS_IMAGE")
+      tags = ["latest",System.getenv("WAS_IMAGE_TAG")]
     }
     container {
       jvmFlags = ["-Xms128m", "-Xmx128m"]

@@ -15,9 +15,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: rayshoo/petclinic-base:latest
+    image: ${BASE_IMAGE}:${BASE_IMAGE_TAG:-latest}
   was:
-    image: rayshoo/petclinic
+    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG:-latest}
     ports:
     - 8080:8080
     user: "1000:1000"
