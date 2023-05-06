@@ -68,7 +68,7 @@ tasks.withType(Javadoc) {
 
 jib {
     from {
-      image = "khipu/openjdk17-alpine"
+      image = "rayshoo/petclinic-base"
     }
     to {
       image = "rayshoo/petclinic"

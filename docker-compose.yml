@@ -4,18 +4,25 @@ services:
   mysql:
     image: mysql:8.0
     ports:
-    - "3306:${DB_PORT}"
+    - 3306:${DB_PORT}
     environment:
     - MYSQL_ROOT_PASSWORD=${DB_PASS}
     - MYSQL_DATABASE=${DB_PATH}
     volumes:
     - "./conf.d:/etc/mysql/conf.d:ro"
     - "/mnt/petclinic/mysql:/var/lib/mysql"
+  base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rayshoo/petclinic-base:latest
   was:
     image: rayshoo/petclinic
     ports:
-    - "8080:8080"
+    - 8080:8080
     user: "1000:1000"
     env_file:
     - .env
     restart: always
+    volumes:
+    - "/logs:/var/log/petclinic"
