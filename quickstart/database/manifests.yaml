@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: petclinic-mysql
+  namespace: default
+data:
+  MYSQL_DATABASE: cGV0Y2xpbmlj
+  MYSQL_ROOT_PASSWORD: cGV0Y2xpbmlj
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: petclinic
+  namespace: default
+spec:
+  storageClassName: ""
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: petclinic-mysql
+  name: petclinic-mysql
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-mysql
+  template:
+    metadata:
+      labels:
+        app: petclinic-mysql
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        envFrom:
+        - secretRef:
+            name: petclinic-mysql
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: petclinic
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: petclinic-mysql
+  name: petclinic-mysql
+  namespace: default
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: petclinic-mysql

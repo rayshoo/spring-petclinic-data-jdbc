@@ -7,8 +7,10 @@
 # 테스트용 pv, 영속성을 위해서는 default/petclinic pvc에 적절한 pv를 연결해야 함.
 $ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/example/pv.yaml
 
-$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/database/ && \
-kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/database/ && \
+# Create petclinic manifest, forward ingress-nginx controller service port.
+# petclinic 매니패스트 생성, ingress-nginx controller 서비스 포트포워드.
+$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/database/manifests.yaml && \
+kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/server/manifests.yaml && \
 kubectl port-forward -n ingress-nginx --address=0.0.0.0 svc/ingress-nginx-controller 3000:80
 
 $ curl -H "Host: petclinic.example.com" <hostIP>:3000
