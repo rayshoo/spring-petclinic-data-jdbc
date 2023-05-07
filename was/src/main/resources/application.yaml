@@ -1,4 +1,5 @@
 server:
+  port: ${WAS_PORT:8080}
   shutdown: graceful
 spring:
   # sigkill timeout
@@ -10,7 +11,7 @@ spring:
   # database init
   datasource:
     username: ${MYSQL_USER:root}
-    url: jdbc:mysql://${MYSQL_URL:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:petclinic}
+    url: jdbc:mysql://${MYSQL_URL:petclinic-mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:petclinic}
     password: ${MYSQL_PASS}
   # do not attempt to replace database with in-memory database
   test:
