@@ -6,6 +6,16 @@ services:
       context: base
       dockerfile: Dockerfile
     image: ${BASE_IMAGE}:${BASE_IMAGE_TAG:-latest}
+  was_builder:
+    build:
+      context: was
+      dockerfile: Dockerfile
+    env_file:
+    - .env
+    - .env.mysql
+    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG:-latest}.builder
+    volumes:
+    - "${HOME}/.docker:/root/.docker"
   was:
     image: ${WAS_IMAGE}:${WAS_IMAGE_TAG:-latest}
     ports:

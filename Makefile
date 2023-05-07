@@ -4,15 +4,15 @@ export
 GIT_VER=$(shell git describe --tags)
 .DEFAULT_GOAL := all
 
-all: base build down pull run log
+all: build down pull run log
 .PHONY:all
 
 base:
 	docker-compose build base && docker-compose push base
 .PHONY:base
 
-build:
-	cd was && ./gradlew jib
+build: base
+	docker-compose build was_builder && docker-compose up was_builder
 .PHONY:build
 
 down:
