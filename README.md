@@ -26,10 +26,10 @@ $ curl <hostIP>:3000
 ```sh
 $ wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/.env.example && \
 wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/.env.mysql.example && \
-cp .env.example .env && cp .env.mysql.example .env.mysql
+cp .env.example .env && cp .env.mysql.example .env.mysql && ls -al
 ```
-When specifying different names for the base image and web server image, create imageSecretName if the repository is private.</br>
-베이스 이미지와 웹서버 이미지를 다른 이름으로 지정할 때, 해당 레포지토리가 private 인 경우 imageSecretName을 작성한다.</br>
+When specifying different names for the base image and web server image, create imageSecret if the repository is private.</br>
+베이스 이미지와 웹서버 이미지를 다른 이름으로 지정할 때, 해당 레포지토리가 private 인 경우 imageSecret을 생성한다.</br>
 [imageSecret 생성하기 | To create imageSecret](docs/imageSecret.md)
 
 ```yaml
@@ -53,8 +53,8 @@ MYSQL_ROOT_PASSWORD=<mysql pass> # Use same password!
 # Downloading petclinic binary files. It creates petclinic k8s manifest files according to envs.
 # petclinic 바이너리 파일 다운로드, 환경변수에 따라 petclinic k8s 매니패스트 파일들을 생성해주는 도구.
 $ VERSION=v1.0.0
-$ ARCH=<amd64|arm64>
 $ OS=<linux|windows|darwin>
+$ ARCH=<amd64|arm64>
 $ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$OS-$ARCH -O ./petclinic && \
 chmod +x ./petclinic
 
@@ -64,10 +64,10 @@ $ ls .env
 -rw-rw-r-- .env
 $ ./petclinic > manifests.yaml
 
-# Wait for the build to complete.
-# 빌드가 완료될때까지 대기.
+# Wait for the build to complete. Note that it is executed synchronously in the order of base > builder > build.
+# 빌드가 완료될때까지 대기. base > builder > build 순서로 동기적으로 실행됨에 유의한다.
 $ kubectl apply -f manifests.yaml && \
-kubectl wait --timeout=10m --for=condition=complete job/petclinic-builder
+watch kubectl get pods
 
 # If the mysql pod is in pending state, make sure you have connected the appropriate pv. Create pv for testing if there is none.
 # mysql pod가 pending 상태일 경우, 적절한 pv를 연결했는지 확인한다. 없을 시 테스트용 pv 연결.
@@ -81,8 +81,8 @@ $ kubectl rollout restart deployment petclinic
 
 # Check routing through Ingress Controller
 # 인그레스 컨트롤러를 통한 라우팅 확인
-$ kubectl port-forward -n ingress-nginx --address=0.0.0.0 svc/ingress-nginx-controller 3000:80 && \
-curl -H "Host: petclinic.example.com" <hostIP>:3000
+$ kubectl port-forward -n ingress-nginx --address=0.0.0.0 svc/ingress-nginx-controller 3000:80
+$ curl -H "Host: petclinic.example.com" <hostIP>:3000
 ```
 
 ### With Docker Engine - on Docker
