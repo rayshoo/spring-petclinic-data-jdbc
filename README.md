@@ -55,7 +55,7 @@ MYSQL_ROOT_PASSWORD=<mysql pass> # Use same password!
 $ VERSION=v1.0.0
 $ ARCH=<amd64|arm64>
 $ OS=<linux|windows|darwin>
-$ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$ARCH-$OS -O ./petclinic && \
+$ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$OS-$ARCH -O ./petclinic && \
 chmod +x ./petclinic
 
 # Run petclinic binary with .env file in current path, Create manifests.yaml file with stdout.
