@@ -5,17 +5,17 @@
 ```sh
 # Test pv, for persistence, you need to connect an appropriate pv to the default/petclinic pvc.
 # 테스트용 pv, 영속성을 위해서는 default/petclinic pvc에 적절한 pv를 연결해야 함.
-$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/manifests/example/pv.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/example/pv.yaml
 
-$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/manifests/database/ && \
-kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/manifests/database/ && \
+$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/database/ && \
+kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/database/ && \
 kubectl port-forward -n ingress-nginx --address=0.0.0.0 svc/ingress-nginx-controller 3000:80
 
 $ curl -H "Host: petclinic.example.com" <hostIP>:3000
 
-# Use manifests/example/ing.yaml if you don't want host input.
-# host 입력을 원하지 않을 경우, manifests/example/ing.yaml 사용.
-$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/manifests/example/ing.yaml
+# Use quickstart/example/ing.yaml if you don't want host input.
+# host 입력을 원하지 않을 경우, quickstart/example/ing.yaml 사용.
+$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/example/ing.yaml
 $ curl <hostIP>:3000
 ```
 
@@ -70,7 +70,7 @@ kubectl wait --timeout=10m --for=condition=complete job/petclinic-builder
 # If the mysql pod is in pending state, make sure you have connected the appropriate pv. Create pv for testing if there is none.
 # mysql pod가 pending 상태일 경우, 적절한 pv를 연결했는지 확인한다. 없을 시 테스트용 pv 연결.
 $ kubectl get pods -l app=petclinic-mysql
-$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/manifests/example/pv.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/quickstart/example/pv.yaml
 
 # https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
 # When pod creation fails, the restart time increases as time elapses, so restart the deployment using the image you just built.
