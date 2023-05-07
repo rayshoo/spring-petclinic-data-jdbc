@@ -1,8 +1,9 @@
+{%- if BASE_IMAGE != "rayshoo/petclinic-base" -%}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: base-image-builder
+  name: petclinic-base-builder
   namespace: default
 spec:
   activeDeadlineSeconds: 300
@@ -19,16 +20,102 @@ spec:
         volumeMounts:
         - name: dockerfile
           mountPath: /workspace
-        - name: kaniko-secret
+        {%- if IMAGE_REPO_SECRET != "" %}
+        - name: registry-credential
           mountPath: /kaniko/.docker
+        {%- endif %}
       restartPolicy: Never
       volumes:
       - name: dockerfile
         configMap:
           name: petclinic-base-dockerfile
-      - name: kaniko-secret
+      {%- if IMAGE_REPO_SECRET != "" %}
+      - name: registry-credential
         secret:
-          secretName: {{ BASE_IMAGE_PUSH_SECRET }}
+          secretName: {{ IMAGE_REPO_SECRET }}
           items:
           - key: .dockerconfigjson
             path: config.json
+      {%- endif %}
+{%- endif -%}
+{%- if WAS_IMAGE != "rayshoo/petclinic" %}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: petclinic-builder
+  namespace: default
+spec:
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 172800
+  template:
+    spec:
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:v1.6.0
+        args:
+        - --dockerfile=/workspace/Dockerfile
+        - --context=dir://workspace
+        - --destination={{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}.builder
+        volumeMounts:
+        - name: dockerfile
+          mountPath: /workspace
+        {%- if IMAGE_REPO_SECRET != "" %}
+        - name: registry-credential
+          mountPath: /kaniko/.docker
+        {%- endif %}
+      restartPolicy: Never
+      volumes:
+      - name: dockerfile
+        configMap:
+          name: petclinic-dockerfile
+      {%- if IMAGE_REPO_SECRET != "" %}
+      - name: registry-credential
+        secret:
+          secretName: {{ IMAGE_REPO_SECRET }}
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+      {%- endif %}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: petclinic-build
+  namespace: default
+spec:
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 172800
+  template:
+    spec:
+      containers:
+      - name: petclinic-build
+        image: {{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}.builder
+        imagePullPolicy: Always
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: petclinic-mysql
+              key: MYSQL_DATABASE
+        envFrom:
+        - secretRef:
+            name: petclinic
+      {%- if IMAGE_REPO_SECRET != "" %}
+        volumeMounts:
+        - name: registry-credential
+          mountPath: /root/.docker/config.json
+          subPath: config.json
+          readOnly: true
+      restartPolicy: Never
+      volumes:
+      - name: registry-credential
+        secret:
+          secretName: {{ IMAGE_REPO_SECRET }}
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+      imagePullSecrets:
+      - name: {{ IMAGE_REPO_SECRET }}
+      {%- endif %}
+{%- endif -%}

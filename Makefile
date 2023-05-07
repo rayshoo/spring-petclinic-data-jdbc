@@ -12,7 +12,8 @@ base:
 .PHONY:base
 
 build: base
-	docker-compose build was_builder && docker-compose up was_builder
+	docker-compose build --no-cache was_builder && docker-compose up was_builder
+	# cd was && ./gradlew jib
 .PHONY:build
 
 down:

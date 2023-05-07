@@ -3,37 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: petclinic-mysql
-  name: petclinic-mysql
-  namespace: default
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: petclinic-mysql
-  template:
-    metadata:
-      labels:
-        app: petclinic-mysql
-    spec:
-      containers:
-      - image: mysql:8.0
-        name: mysql
-        envFrom:
-        - secretRef:
-            name: petclinic-mysql
-        volumeMounts:
-        - name: data
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: petclinic
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app: petclinic
   name: petclinic
   namespace: default
@@ -57,7 +26,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - image: {{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}
+      - image: rayshoo/petclinic:v1.0.0
         name: petclinic
         env:
         - name: MYSQL_DATABASE
@@ -71,14 +40,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /manage/health/liveness
-            port: {{ WAS_PORT }}
+            port: 8080
           initialDelaySeconds: 15
           failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /manage/health/readiness
-            port: {{ WAS_PORT }}
+            port: 8080
         volumeMounts:
         - name: logs
           mountPath: /var/log/petclinic
@@ -87,7 +56,3 @@ spec:
         hostPath:
           type: Directory
           path: /logs
-      {%- if IMAGE_REPO_SECRET != "" %}
-      imagePullSecrets:
-      - name: {{ IMAGE_REPO_SECRET }}
-      {%- endif -%}

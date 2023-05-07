@@ -1,4 +1,4 @@
-module go-jinja
+module petclinic
 
 go 1.19
 

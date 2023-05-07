@@ -1,0 +1,36 @@
+{%- if BASE_IMAGE != "rayshoo/petclinic-base" -%}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: petclinic-base-dockerfile
+  namespace: default
+data:
+  Dockerfile: |-
+    FROM khipu/openjdk17-alpine
+    RUN addgroup --system --gid 1000 spring && \
+    adduser --system --uid 1000 --ingroup spring --disabled-password spring && \
+    mkdir /var/log/petclinic && \
+    chown -R spring:spring /var/log/petclinic
+    USER spring
+    WORKDIR /var/log/petclinic
+{%- endif -%}
+{%- if WAS_IMAGE != "rayshoo/petclinic" %}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: petclinic-dockerfile
+  namespace: default
+data:
+  Dockerfile: |-
+    FROM alpine:3.17.3 as builder
+    RUN apk add git && \
+    git clone https://github.com/rayshoo/spring-petclinic-data-jdbc.git petclinic
+
+    FROM khipu/openjdk17-alpine
+    COPY --from=builder petclinic/was .
+    RUN mkdir /root/.docker
+    ENTRYPOINT ["./gradlew"]
+    CMD ["jib"]
+{%- endif -%}

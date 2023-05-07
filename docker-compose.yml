@@ -1,11 +1,11 @@
-version: "2.2"
+version: "3"
 
 services:
   base:
     build:
       context: base
       dockerfile: Dockerfile
-    image: ${BASE_IMAGE}:${BASE_IMAGE_TAG:-latest}
+    image: ${BASE_IMAGE}:${BASE_IMAGE_TAG}
   was_builder:
     build:
       context: was
@@ -13,11 +13,11 @@ services:
     env_file:
     - .env
     - .env.mysql
-    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG:-latest}.builder
+    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG}.builder
     volumes:
     - "${HOME}/.docker:/root/.docker"
   was:
-    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG:-latest}
+    image: ${WAS_IMAGE}:${WAS_IMAGE_TAG}
     ports:
     - 8080:8080
     user: "1000:1000"

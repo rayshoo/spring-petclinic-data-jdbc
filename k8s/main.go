@@ -2,9 +2,9 @@ package main
 
 import (
 	"embed"
+	"encoding/base64"
 	"fmt"
 	"os"
-	"encoding/base64"
 
 	"github.com/flosch/pongo2/v6"
 	"github.com/joho/godotenv"
@@ -29,6 +29,7 @@ func init() {
 
 //go:embed files
 var files embed.FS
+
 //go:embed templates
 var templates embed.FS
 
@@ -38,48 +39,50 @@ func main() {
 		return
 	}
 
-	var context pongo2.Context
-
-	if os.Getenv("BASE_IMAGE") != "rayshoo/petclinic-base" {
-		// cm.yaml
-		fmt.Println(readEmbedFile("files/cm.yaml"))
-		// job.yaml
-		context = getContext([]string{"BASE_IMAGE","BASE_IMAGE_TAG","BASE_IMAGE_PUSH_SECRET"})
-		fmt.Println(templating("templates/job.yaml",context))
-	}
-	// secert.yaml
-	context = getBase64EncodedContext([]string{
+	context := getContext([]string{
 		"BASE_IMAGE",
 		"BASE_IMAGE_TAG",
 		"WAS_IMAGE",
 		"WAS_IMAGE_TAG",
+		"WAS_PORT",
+		"IMAGE_REPO_SECRET",
+		"MYSQL_URL",
 		"MYSQL_PORT",
 		"MYSQL_DATABASE",
 		"MYSQL_USER",
 		"MYSQL_PASS",
 		"MYSQL_ROOT_PASSWORD",
 	})
-	context["MYSQL_URL"] = base64.StdEncoding.EncodeToString([]byte("petclinic-" + os.Getenv("MYSQL_URL")))
-	fmt.Println(templating("templates/secret.yaml",context))
+	b64Context := getBase64EncodedContext(&context)
+
+	// cm.yaml
+	fmt.Println(templating("templates/cm.yaml", context))
+	// job.yaml
+	fmt.Println(templating("templates/job.yaml", context))
+
+	// secert.yaml
+	b64Context["MYSQL_URL"] = base64.StdEncoding.EncodeToString([]byte("petclinic-" + os.Getenv("MYSQL_URL")))
+	fmt.Println(templating("templates/secret.yaml", b64Context))
+
+	// pvc.yaml
+	fmt.Println(readEmbedFile("files/pvc.yaml"))
 
 	// deploy.yaml
-	context = getContext([]string{"WAS_IMAGE","WAS_IMAGE_TAG","WAS_IMAGE_PULL_SECRET"})
-	fmt.Println(templating("templates/deploy.yaml",context))
+	fmt.Println(templating("templates/deploy.yaml", context))
 
 	// svc.yaml
-	context = getContext([]string{"MYSQL_URL","MYSQL_PORT"})
-	fmt.Println(templating("templates/svc.yaml",context))
+	fmt.Println(templating("templates/svc.yaml", context))
 
-	// ing.yaml	
+	// ing.yaml
 	fmt.Println(readEmbedFile("files/ing.yaml"))
 }
 
-func getBase64EncodedContext(keys []string) pongo2.Context {
-	context := pongo2.Context{}
-	for i := range keys {
-		context[keys[i]] = base64.StdEncoding.EncodeToString([]byte(os.Getenv(keys[i])))
+func getBase64EncodedContext(context *pongo2.Context) pongo2.Context {
+	result := pongo2.Context{}
+	for k, v := range *context {
+		result[k] = base64.StdEncoding.EncodeToString([]byte(v.(string)))
 	}
-	return context
+	return result
 }
 
 func getContext(keys []string) pongo2.Context {
