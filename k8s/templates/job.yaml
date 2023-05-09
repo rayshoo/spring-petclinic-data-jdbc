@@ -14,8 +14,8 @@ spec:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:v1.6.0
         args:
+        - --context=dir://.
         - --dockerfile=/workspace/Dockerfile
-        - --context=dir://workspace
         - --destination={{ IMAGE }}-base:v1.0.0
         volumeMounts:
         - name: dockerfile
@@ -52,12 +52,16 @@ spec:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:v1.6.0
         args:
+        - --context=dir://.
         - --dockerfile=/workspace/Dockerfile
-        - --context=dir://workspace
         - --destination={{ IMAGE }}-builder:v1.0.0
         volumeMounts:
         - name: builder
-          mountPath: /workspace
+          mountPath: /workspace/Dockerfile
+          subPath: Dockerfile
+        - name: builder
+          mountPath: /workspace/builder.sh
+          subPath: builder.sh
         {%- if IMAGE_REPO_SECRET != "" %}
         - name: registry-credential
           mountPath: /kaniko/.docker
@@ -67,6 +71,11 @@ spec:
       - name: builder
         configMap:
           name: petclinic-builder
+          items:
+          - key: Dockerfile
+            path: Dockerfile
+          - key: builder.sh
+            path: builder.sh
       {%- if IMAGE_REPO_SECRET != "" %}
       - name: registry-credential
         secret:
