@@ -1,4 +1,4 @@
-# About, 설명
+# Explain, 설명
 ## Main, 메인
 [Main](../README.md)
 

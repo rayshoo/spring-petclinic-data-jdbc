@@ -31,7 +31,7 @@ $ wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/mast
 wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/.env.mysql.example && \
 mv .env.example .env && mv .env.mysql.example .env.mysql && ls -al
 ```
-Create an imageSecret for the registry to pull and push images to.
+Create an imageSecret for the registry to pull and push images to.</br>
 이미지를 풀,푸시할 레지스트리의 imageSecret을 미리 생성한다.</br>
 [imageSecret 생성하기 | To create imageSecret](docs/imageSecret.md)
 
