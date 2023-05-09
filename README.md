@@ -58,10 +58,12 @@ $ ARCH=<amd64|arm64>
 $ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$OS-$ARCH -O ./petclinic && \
 chmod +x ./petclinic
 
-# Run petclinic binary with .env file in current path, Create manifests.yaml file with stdout.
-# 현재 경로에 .env 파일이 있는 상태에서 petclinic 바이너리 실행, stdout으로 manifests.yaml 파일 생성.
-$ ls .env
+# Run petclinic binary with .env, .env.mysql file in current path, Create manifests.yaml file with stdout.
+# 현재 경로에 .env, .env.mysql 파일이 있는 상태에서 petclinic 바이너리 실행, stdout으로 manifests.yaml 파일 생성.
+$ ls .env .env.mysql
 -rw-rw-r-- .env
+-rw-rw-r-- .env.mysql
+
 $ ./petclinic > manifests.yaml
 
 # Wait for the build to complete. Note that it is executed synchronously in the order of base > builder > build.
