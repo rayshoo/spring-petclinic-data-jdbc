@@ -62,11 +62,9 @@ chmod +x ./petclinic
 
 # Run petclinic binary with .env, .env.mysql file in current path, Create manifests.yaml file with stdout.
 # 현재 경로에 .env, .env.mysql 파일이 있는 상태에서 petclinic 바이너리 실행, stdout으로 manifests.yaml 파일 생성.
-$ ls .env .env.mysql
+$ ls -al .env .env.mysql && ./petclinic > manifests.yaml
 -rw-rw-r-- .env
 -rw-rw-r-- .env.mysql
-
-$ ./petclinic > manifests.yaml
 
 # Wait for the build to complete. Note that it is executed synchronously in the order of base > builder > build.
 # 빌드가 완료될때까지 대기. base > builder > build 순서로 동기적으로 실행됨에 유의한다.
