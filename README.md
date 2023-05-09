@@ -51,12 +51,14 @@ MYSQL_ROOT_PASSWORD=<mysql pass> # Use same password!
 ## Build, 빌드
 ### Without Docker Engine - on K8S
 ```sh
-# https://github.com/rayshoo/spring-petclinic-data-jdbc/tree/master/k8s
+# Binary source path: https://github.com/rayshoo/spring-petclinic-data-jdbc/tree/master/k8s
 # Downloading petclinic binary files. It creates petclinic k8s manifest files according to envs.
+# Omitting codesign may block file execution on mac. In this case, google it to unblock it.
 # petclinic 바이너리 파일 다운로드, 환경변수에 따라 petclinic k8s 매니패스트 파일들을 생성해주는 도구.
+# codesign을 생략해서 mac에서는 파일 실행이 차단될 수 있다. 이 경우 구글링으로 차단 해제를 하도록 한다.
 $ VERSION=v1.0.2
-$ OS=<linux|windows|darwin>
-$ ARCH=<amd64|arm64>
+$ OS=<linux|windows|darwin> # ex: OS=linux
+$ ARCH=<amd64|arm64>  # ex: ARCH=amd64
 $ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$OS-$ARCH -O ./petclinic && \
 chmod +x ./petclinic
 
