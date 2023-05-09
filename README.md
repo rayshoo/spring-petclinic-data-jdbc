@@ -1,7 +1,7 @@
 # Petclinic
 
-## About, 설명
-[About](docs/about.md)
+## Explain Required, 요구 사항 설명
+[Explain](docs/explain.md)
 
 ## Quick Start, 빠른 시작
 
