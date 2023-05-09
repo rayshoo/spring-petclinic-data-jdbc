@@ -1,4 +1,4 @@
-{%- if BASE_IMAGE != "rayshoo/petclinic-base" -%}
+{%- if IMAGE != "rayshoo/petclinic" %}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -16,7 +16,7 @@ spec:
         args:
         - --dockerfile=/workspace/Dockerfile
         - --context=dir://workspace
-        - --destination={{ BASE_IMAGE }}:{{ BASE_IMAGE_TAG }}
+        - --destination={{ IMAGE }}-base:v1.0.0
         volumeMounts:
         - name: dockerfile
           mountPath: /workspace
@@ -37,8 +37,6 @@ spec:
           - key: .dockerconfigjson
             path: config.json
       {%- endif %}
-{%- endif -%}
-{%- if WAS_IMAGE != "rayshoo/petclinic" %}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -56,7 +54,7 @@ spec:
         args:
         - --dockerfile=/workspace/Dockerfile
         - --context=dir://workspace
-        - --destination={{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}.builder
+        - --destination={{ IMAGE }}-builder:v1.0.0
         volumeMounts:
         - name: builder
           mountPath: /workspace
@@ -90,7 +88,7 @@ spec:
     spec:
       containers:
       - name: petclinic-build
-        image: {{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}.builder
+        image: {{ IMAGE }}-builder:v1.0.0
         imagePullPolicy: Always
         env:
         - name: MYSQL_DATABASE

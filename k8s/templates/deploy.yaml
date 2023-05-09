@@ -57,7 +57,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - image: {{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}
+      - image: {{ IMAGE }}:{{ IMAGE_TAG }}
         name: petclinic
         env:
         - name: MYSQL_DATABASE

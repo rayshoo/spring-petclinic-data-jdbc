@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/flosch/pongo2/v6"
 	"github.com/joho/godotenv"
@@ -39,11 +40,9 @@ func main() {
 		return
 	}
 
-	context := getContext([]string{
-		"BASE_IMAGE",
-		"BASE_IMAGE_TAG",
-		"WAS_IMAGE",
-		"WAS_IMAGE_TAG",
+	envs := []string{
+		"IMAGE",
+		"IMAGE_TAG",
 		"WAS_PORT",
 		"IMAGE_REPO_SECRET",
 		"MYSQL_URL",
@@ -52,7 +51,17 @@ func main() {
 		"MYSQL_USER",
 		"MYSQL_PASS",
 		"MYSQL_ROOT_PASSWORD",
-	})
+	}
+
+	for i := range envs {
+		if os.Getenv(envs[i]) == "" {
+			handleError(fmt.Errorf("The " + envs[i] + " environment variable needs a value."))
+		}
+	}
+	portCheck("WAS_PORT")
+	portCheck("MYSQL_PORT")
+
+	context := getContext(&envs)
 	b64Context := getBase64EncodedContext(&context)
 
 	// cm.yaml
@@ -85,10 +94,10 @@ func getBase64EncodedContext(context *pongo2.Context) pongo2.Context {
 	return result
 }
 
-func getContext(keys []string) pongo2.Context {
+func getContext(keys *[]string) pongo2.Context {
 	context := pongo2.Context{}
-	for i := range keys {
-		context[keys[i]] = os.Getenv(keys[i])
+	for i := range *keys {
+		context[(*keys)[i]] = os.Getenv((*keys)[i])
 	}
 	return context
 }
@@ -117,7 +126,14 @@ func templating(filePath string, context pongo2.Context) string {
 	return result
 }
 
+func portCheck(key string) {
+	_, err := strconv.Atoi(os.Getenv(key))
+	if err != nil {
+		handleError(fmt.Errorf("You must assign a numeric value to the environment variable '" + key + "'. - current value: " + os.Getenv(key)))
+	}
+}
+
 func handleError(err error) {
-	os.Stderr.WriteString(err.Error())
+	os.Stderr.WriteString(err.Error() + "\n")
 	os.Exit(1)
 }

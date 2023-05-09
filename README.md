@@ -36,8 +36,7 @@ Create an imageSecret for the registry to pull and push images to.
 # For scalability, the password environment variable used by each app is separated, but the same password is used in practice.
 # 확장성을 위해 각 앱이 사용하는 Password 환경 변수를 분리했으나, 실습에서는 동일한 비밀번호를 사용하도록 한다.
 # .env
-BASE_IMAGE=<registry/baseImageName>
-WAS_IMAGE=<registry/wasImageName>
+IMAGE=<registry/imageName>
 IMAGE_REPO_SECRET=<imageSecretName>
 
 MYSQL_PASS=<mysql pass> # Use same password!

@@ -6,10 +6,8 @@ metadata:
   name: petclinic
   namespace: default
 data:
-  BASE_IMAGE: cmF5c2hvby9wZXRjbGluaWMtYmFzZQ==
-  BASE_IMAGE_TAG: djEuMC4w
-  WAS_IMAGE: cmF5c2hvby9wZXRjbGluaWM=
-  WAS_IMAGE_TAG: djEuMC4w
+  IMAGE: cmF5c2hvby9wZXRjbGluaWM=
+  IMAGE_TAG: djEuMC4w
   WAS_PORT: ODA4MA==
   MYSQL_URL: cGV0Y2xpbmljLW15c3Fs
   MYSQL_PORT: MzMwNg==

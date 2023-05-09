@@ -1,4 +1,4 @@
-{%- if BASE_IMAGE != "rayshoo/petclinic-base" -%}
+{%- if IMAGE != "rayshoo/petclinic" %}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -14,8 +14,6 @@ data:
     chown -R spring:spring /var/log/petclinic
     USER spring
     WORKDIR /var/log/petclinic
-{%- endif -%}
-{%- if WAS_IMAGE != "rayshoo/petclinic" %}
 ---
 apiVersion: v1
 kind: ConfigMap
