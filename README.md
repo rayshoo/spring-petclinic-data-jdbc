@@ -1,5 +1,8 @@
 # Petclinic
 
+## About, 설명
+[About](docs/about.md)
+
 ## Quick Start, 빠른 시작
 
 ```sh
@@ -51,7 +54,7 @@ MYSQL_ROOT_PASSWORD=<mysql pass> # Use same password!
 # https://github.com/rayshoo/spring-petclinic-data-jdbc/tree/master/k8s
 # Downloading petclinic binary files. It creates petclinic k8s manifest files according to envs.
 # petclinic 바이너리 파일 다운로드, 환경변수에 따라 petclinic k8s 매니패스트 파일들을 생성해주는 도구.
-$ VERSION=v1.0.0
+$ VERSION=v1.0.1
 $ OS=<linux|windows|darwin>
 $ ARCH=<amd64|arm64>
 $ wget https://github.com/rayshoo/spring-petclinic-data-jdbc/releases/download/$VERSION/petclinic-$OS-$ARCH -O ./petclinic && \
