@@ -8,7 +8,7 @@ services:
     image: ${BASE_IMAGE}:${BASE_IMAGE_TAG}
   was_builder:
     build:
-      context: was
+      context: builder
       dockerfile: Dockerfile
     env_file:
     - .env

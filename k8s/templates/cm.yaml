@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: petclinic-base-dockerfile
+  name: petclinic-base-builder
   namespace: default
 data:
   Dockerfile: |-
@@ -20,17 +20,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: petclinic-dockerfile
+  name: petclinic-builder
   namespace: default
 data:
   Dockerfile: |-
-    FROM alpine:3.17.3 as builder
-    RUN apk add git && \
-    git clone https://github.com/rayshoo/spring-petclinic-data-jdbc.git petclinic
-
     FROM khipu/openjdk17-alpine
-    COPY --from=builder petclinic/was .
-    RUN mkdir /root/.docker
-    ENTRYPOINT ["./gradlew"]
-    CMD ["jib"]
+    COPY builder.sh .
+    RUN apk add git && chmod +x ./builder.sh
+    ENTRYPOINT ["./builder.sh"]
+  build.sh: |-
+    #! /bin/sh
+    git clone https://github.com/rayshoo/spring-petclinic-data-jdbc.git petclinic
+    cd petclinic/was/
+    chmod +x ./gradlew
+    ./gradlew jib
 {%- endif -%}

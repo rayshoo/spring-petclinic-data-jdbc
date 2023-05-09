@@ -28,7 +28,7 @@ spec:
       volumes:
       - name: dockerfile
         configMap:
-          name: petclinic-base-dockerfile
+          name: petclinic-base-builder
       {%- if IMAGE_REPO_SECRET != "" %}
       - name: registry-credential
         secret:
@@ -58,7 +58,7 @@ spec:
         - --context=dir://workspace
         - --destination={{ WAS_IMAGE }}:{{ WAS_IMAGE_TAG }}.builder
         volumeMounts:
-        - name: dockerfile
+        - name: builder
           mountPath: /workspace
         {%- if IMAGE_REPO_SECRET != "" %}
         - name: registry-credential
@@ -66,9 +66,9 @@ spec:
         {%- endif %}
       restartPolicy: Never
       volumes:
-      - name: dockerfile
+      - name: builder
         configMap:
-          name: petclinic-dockerfile
+          name: petclinic-builder
       {%- if IMAGE_REPO_SECRET != "" %}
       - name: registry-credential
         secret:

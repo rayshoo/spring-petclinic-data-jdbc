@@ -26,10 +26,10 @@ $ curl <hostIP>:3000
 ```sh
 $ wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/.env.example && \
 wget https://raw.githubusercontent.com/rayshoo/spring-petclinic-data-jdbc/master/.env.mysql.example && \
-cp .env.example .env && cp .env.mysql.example .env.mysql && ls -al
+mv .env.example .env && mv .env.mysql.example .env.mysql && ls -al
 ```
-When specifying different names for the base image and web server image, create imageSecret if the repository is private.</br>
-베이스 이미지와 웹서버 이미지를 다른 이름으로 지정할 때, 해당 레포지토리가 private 인 경우 imageSecret을 생성한다.</br>
+Create an imageSecret for the registry to pull and push images to.
+이미지를 풀,푸시할 레지스트리의 imageSecret을 미리 생성한다.</br>
 [imageSecret 생성하기 | To create imageSecret](docs/imageSecret.md)
 
 ```yaml
@@ -38,7 +38,7 @@ When specifying different names for the base image and web server image, create 
 # .env
 BASE_IMAGE=<registry/baseImageName>
 WAS_IMAGE=<registry/wasImageName>
-IMAGE_REPO_SECRET=<imageSecretName> # Write if necessary. (private repository)
+IMAGE_REPO_SECRET=<imageSecretName>
 
 MYSQL_PASS=<mysql pass> # Use same password!
 
@@ -88,8 +88,8 @@ $ curl -H "Host: petclinic.example.com" <hostIP>:3000
 ### With Docker Engine - on Docker
 [docker-compose 설치](https://github.com/docker/compose/releases)
 ```sh
-# When pushing an image to a private repository, log in.
-# private한 레포지토리에 이미지를 푸시할 경우, 로그인을 한다.
+# Docker login to the registry to pull and push the image.
+# 이미지를 풀,푸시할 레지스트리에 도커 로그인을 한다.
 $ echo <registry password> | docker login [<registry name>] -u <registry username> --password-stdin
 
 $ git clone https://github.com/rayshoo/spring-petclinic-data-jdbc.git && cd spring-petclinic-data-jdbc
@@ -105,12 +105,15 @@ $ ls -al docker-compose.yml .env .env.mysql Makefile
 -rw-rw-r-- docker-compose.yml
 -rw-rw-r-- .env
 -rw-rw-r-- .env.mysql
+-rw-rw-r-- Makefile
 
 $ docker-compose build base && docker-compose push base && \
-docker-compose build --no-cache was_builder && docker-compose up was_builder
+docker-compose build --no-cache was_builder && docker-compose up was_builder && \
+docker-compose down && docker-compose pull mysql was && \
+docker-compose up -d mysql was
 
-# If make is installed, simply type the make command.
-# make가 설치되어 있다면, 그냥 make 명령어를 입력한다.
+# If make is installed, you can enter the make command instead of the docker-compose command.
+# make가 설치되어 있다면, docker-compose 명령어 대신 make 명령어를 입력해도 된다.
 $ make
 
 $ curl localhost:8080
