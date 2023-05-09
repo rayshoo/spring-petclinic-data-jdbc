@@ -26,7 +26,7 @@ data:
     COPY builder.sh .
     RUN apk add git && chmod +x ./builder.sh
     ENTRYPOINT ["./builder.sh"]
-  build.sh: |-
+  builder.sh: |-
     #! /bin/sh
     git clone https://github.com/rayshoo/spring-petclinic-data-jdbc.git petclinic
     cd petclinic/was/
