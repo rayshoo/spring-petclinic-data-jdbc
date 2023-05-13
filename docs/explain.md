@@ -6,11 +6,12 @@
 1. Gradle로 어플리케이션, 도커이미지 빌드</br>
 jib 세팅은 build.gradle [#11](https://github.com/rayshoo/spring-petclinic-data-jdbc/blob/cd433335fb563ee4cbfa441a8e9b48cd621876e8/was/build.gradle#L11), [#69](https://github.com/rayshoo/spring-petclinic-data-jdbc/blob/cd433335fb563ee4cbfa441a8e9b48cd621876e8/was/build.gradle#L69) line에 작성</br>
 ```sh
+$ cd was
 # 어플리케이션 빌드
-gradle build
+$ gradle build
 
 # 도커이미지 빌드
-was/gradlew jib
+$ ./gradlew jib
 ```
 *jib를 사용한 이유: 도커 데몬없이 컨테이너 이미지 빌드를 쉽게 빌드할 수 있다는 점이 매력적으로 느껴져서 궁금했는데, 이번 기회에 사용함.*
 
